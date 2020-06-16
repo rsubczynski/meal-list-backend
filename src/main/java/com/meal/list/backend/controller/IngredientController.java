@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 @RestController()
-@RequestMapping("api/ingredient")
+@RequestMapping("apiV1/ingredient")
 public class IngredientController {
 
     @Autowired
@@ -37,7 +37,7 @@ public class IngredientController {
         return ResponseEntity.ok(ingredientService.findById(id));
     }
 
-    @PostMapping("/addIngredients")
+    @PostMapping()
     public ResponseEntity<Set<Ingredient>> ingredient(@RequestParam("file") MultipartFile file) throws IOException {
         Set<Ingredient> ingredientSet = excelParserService.parseIngredient(fileService.getInputStream(file));
         ingredientService.saveAllIngredient(ingredientSet);
