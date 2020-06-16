@@ -29,14 +29,8 @@ public class FileController {
     @Autowired
     private IngredientService ingredientService;
 
-//    @PostMapping("/uploadDishExcelFile")
-//    public ResponseEntity uploadDishExcelFile(@RequestParam("file") MultipartFile file) throws IOException {
-//        Set<Ingredient> dishSet = excelParserService.parseDish(fileStorageService.storeFile(file));
-//        return ResponseEntity.ok(dishSet);
-//    }
-
     @PostMapping("/uploadIngredientExcelFile")
-    public ResponseEntity ingredient(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<Set<Ingredient>> ingredient(@RequestParam("file") MultipartFile file) throws IOException {
         Set<Ingredient> ingredientSet = excelParserService.parseIngredient(fileStorageService.getInputStream(file));
         ingredientService.saveAllIngredient(ingredientSet);
         return ResponseEntity.ok(ingredientSet);
