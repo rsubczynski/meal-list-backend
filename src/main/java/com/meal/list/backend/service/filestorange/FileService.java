@@ -18,10 +18,10 @@ import java.nio.file.Paths;
 import java.util.Objects;
 
 @Service
-public class FileStorageService {
+public class FileService {
 
     @Autowired
-    public FileStorageService(FileStorageProperties fileStorageProperties) {
+    public FileService(FileStorageProperties fileStorageProperties) {
         Path fileStorageDishLocation = getPathLocation(fileStorageProperties.getUploadDishDir());
         Path fileStorageIngredientLocation = getPathLocation(fileStorageProperties.getUploadIngredientDir());
 
