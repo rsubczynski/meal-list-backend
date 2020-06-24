@@ -39,14 +39,14 @@ public class BackendApplication implements CommandLineRunner {
         List<Ingredient> x = ingredientService.getAllIngredient();
 
         HashMap map = new HashMap();
-        map.put(x.get(1), Weight.builder().gram(100).build());
+//        map.put(x.get(1), Weight.builder().gram(100).build());
 
-        dishService.addDish(Dish.builder()
-				.name("Jajecznica")
-                .categoryEnum(DishCategoryEnum.BREAKFAST)
-                .ingredients(map)
-                .descriptions(Arrays.asList("Wbić jajka", "mieszać"))
-                .build());
+//        dishService.addDish(Dish.builder()
+//				.name("Jajecznica")
+//                .categoryEnum(DishCategoryEnum.BREAKFAST)
+//                .ingredients(map)
+//                .descriptions(Arrays.asList("Wbić jajka", "mieszać"))
+//                .build());
 
        List<Dish> a = dishService.getAllDishes();
 

@@ -6,7 +6,6 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Builder
 @Getter
@@ -14,6 +13,13 @@ import java.util.Objects;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
+@NamedEntityGraph(name = "dish-get-all",
+        attributeNodes = {
+                @NamedAttributeNode("ingredients"),
+                @NamedAttributeNode("descriptions"),
+        }
+)
 public class Dish {
 
     @Id
@@ -26,30 +32,14 @@ public class Dish {
     @Enumerated(EnumType.ORDINAL)
     private DishCategoryEnum categoryEnum;
 
-    @ManyToMany(cascade=CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade=CascadeType.ALL)
     @JoinTable(
             name = "ingredient_dish",
             joinColumns = @JoinColumn(name = "dish_id"),
             inverseJoinColumns = @JoinColumn(name = "ingredient_id"))
     private Map<Ingredient, Weight> ingredients;
 
-    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    @ElementCollection(targetClass = String.class)
     private List<String> descriptions;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Dish dish = (Dish) o;
-        return Objects.equals(id, dish.id) &&
-                Objects.equals(name, dish.name) &&
-                categoryEnum == dish.categoryEnum &&
-                Objects.equals(ingredients, dish.ingredients) &&
-                Objects.equals(descriptions, dish.descriptions);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, categoryEnum, ingredients, descriptions);
-    }
 }
