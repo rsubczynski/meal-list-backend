@@ -3,6 +3,7 @@ package com.meal.list.backend;
 import com.meal.list.backend.configuration.FileStorageProperties;
 import com.meal.list.backend.entity.Dish;
 import com.meal.list.backend.entity.Ingredient;
+import com.meal.list.backend.entity.Weight;
 import com.meal.list.backend.service.IngredientService;
 import com.meal.list.backend.service.dishservice.DishCategoryEnum;
 import com.meal.list.backend.service.dishservice.DishService;
@@ -13,8 +14,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 @SpringBootApplication
 @EnableConfigurationProperties({
@@ -37,15 +38,17 @@ public class BackendApplication implements CommandLineRunner {
 
         List<Ingredient> x = ingredientService.getAllIngredient();
 
-//        dishService.addDish(Dish.builder()
-//				.name("Jajecznica")
-//                .categoryEnum(DishCategoryEnum.BREAKFAST)
-//                .ingredients(Set.of(x.get(1), x.get(2)))
-//                .descriptions(Arrays.asList("Wbić jajka", "mieszać"))
-//                .build());
-//
-//       List<Dish> a = dishService.getAllDishes();
+        HashMap map = new HashMap();
+        map.put(x.get(1), Weight.builder().gram(100).build());
 
-        Dish dish = dishService.getDish(4l);
+        dishService.addDish(Dish.builder()
+				.name("Jajecznica")
+                .categoryEnum(DishCategoryEnum.BREAKFAST)
+                .ingredients(map)
+                .descriptions(Arrays.asList("Wbić jajka", "mieszać"))
+                .build());
+
+       List<Dish> a = dishService.getAllDishes();
+
     }
 }
