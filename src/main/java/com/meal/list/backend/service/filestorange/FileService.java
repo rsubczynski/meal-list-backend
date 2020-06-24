@@ -1,10 +1,7 @@
 package com.meal.list.backend.service.filestorange;
 
 import com.meal.list.backend.configuration.FileStorageProperties;
-import com.meal.list.backend.entity.Ingredient;
 import com.meal.list.backend.error.exception.FileStorageException;
-import com.meal.list.backend.service.ExcelParserService;
-import com.meal.list.backend.service.IngredientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;

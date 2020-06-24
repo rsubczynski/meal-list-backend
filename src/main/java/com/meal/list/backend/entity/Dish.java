@@ -1,51 +1,38 @@
 package com.meal.list.backend.entity;
 
+import com.meal.list.backend.service.dishservice.DishCategoryEnum;
+import lombok.*;
+
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
+@Builder
+@Getter
+@Setter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Dish {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column( unique = true)
     private String name;
 
-//    private List<Ingredient> ingredients;
+    @Enumerated(EnumType.ORDINAL)
+    private DishCategoryEnum categoryEnum;
 
-    @ElementCollection(targetClass=String.class)
+    @ManyToMany
+    @JoinTable(
+            name = "ingredient_dish",
+            joinColumns = @JoinColumn(name = "dish_id"),
+            inverseJoinColumns = @JoinColumn(name = "ingredient_id"))
+    private Set<Ingredient> ingredients;
+
+    @ElementCollection(targetClass = String.class)
     private List<String> descriptions;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-//    public List<Ingredient> getIngredients() {
-//        return ingredients;
-//    }
-//
-//    public void setIngredients(List<Ingredient> ingredients) {
-//        this.ingredients = ingredients;
-//    }
-
-    public List<String> getDescriptions() {
-        return descriptions;
-    }
-
-    public void setDescriptions(List<String> descriptions) {
-        this.descriptions = descriptions;
-    }
 }

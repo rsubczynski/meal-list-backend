@@ -15,8 +15,6 @@ public class FileStorageProperties {
         this.uploadIngredientDir = uploadIngredientDir;
     }
 
-
-
     public String getUploadDishDir() {
         return uploadDishDir;
     }

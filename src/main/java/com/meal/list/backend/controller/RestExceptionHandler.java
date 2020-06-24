@@ -1,9 +1,11 @@
 package com.meal.list.backend.controller;
 
 import com.meal.list.backend.error.ApiError;
+import com.meal.list.backend.error.exception.DishNotFoundException;
 import com.meal.list.backend.error.exception.FileStorageException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,17 +22,25 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(EntityNotFoundException.class)
     protected ResponseEntity<Object> handleEntityNotFound(
             EntityNotFoundException ex) {
-        ApiError apiError = new ApiError(NOT_FOUND);
-        apiError.setMessage(ex.getMessage());
-        return buildResponseEntity(apiError);
+        return buildResponseEntity(buildAppError(NOT_FOUND, ex));
     }
 
     @ExceptionHandler(FileStorageException.class)
     protected ResponseEntity<Object> handleFileStorageException(
             FileStorageException ex) {
-        ApiError apiError = new ApiError(NOT_FOUND);
+        return buildResponseEntity(buildAppError(NOT_FOUND, ex));
+    }
+
+    @ExceptionHandler(DishNotFoundException.class)
+    protected ResponseEntity<Object> handleDishNotFoundException(
+            DishNotFoundException ex) {
+        return buildResponseEntity(buildAppError(NOT_FOUND, ex));
+    }
+
+    private ApiError buildAppError(HttpStatus httpStatus, Exception ex){
+        ApiError apiError = new ApiError(httpStatus);
         apiError.setMessage(ex.getMessage());
-        return buildResponseEntity(apiError);
+        return apiError;
     }
 
     private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {
