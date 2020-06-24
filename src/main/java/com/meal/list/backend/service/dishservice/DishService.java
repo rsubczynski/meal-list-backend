@@ -2,13 +2,15 @@ package com.meal.list.backend.service.dishservice;
 
 import com.meal.list.backend.entity.Dish;
 import com.meal.list.backend.error.exception.DishNotFoundException;
+import com.meal.list.backend.payload.DishSummary;
 import com.meal.list.backend.repository.DishRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DishService {
@@ -17,7 +19,7 @@ public class DishService {
     private DishRepository dishRepository;
 
     public List<Dish> getAllDishes() {
-        return Optional.of(dishRepository.findAll()).orElse(new ArrayList<>());
+        return Optional.of(dishRepository.findAll()).orElse(Collections.emptyList());
     }
 
     public Dish getDish(Long id) {
@@ -25,8 +27,13 @@ public class DishService {
                 .orElseThrow(() -> new DishNotFoundException( "Not found Dish on id = " + id));
     }
 
-    public Object getCategoryDishesCount() {
-        return null;
+    public List<DishSummary> getCategorySummaryCount() {
+        return  Optional.of(dishRepository.findAll()).orElse(Collections.emptyList())
+                .stream()
+                .collect(Collectors.groupingBy(Dish::getCategoryEnum))
+                .entrySet().stream()
+                .map( (k) -> DishSummary.builder().categoryEnum(k.getKey()).count(k.getValue().size()).build())
+                .collect(Collectors.toList());
     }
 
     public void addDish(Dish dish){
