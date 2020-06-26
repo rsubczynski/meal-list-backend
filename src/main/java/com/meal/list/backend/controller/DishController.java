@@ -2,6 +2,7 @@ package com.meal.list.backend.controller;
 
 import com.meal.list.backend.entity.Dish;
 import com.meal.list.backend.payload.DishSummary;
+import com.meal.list.backend.service.dishservice.DishCategoryEnum;
 import com.meal.list.backend.service.dishservice.DishService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -30,5 +31,10 @@ public class DishController {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody ResponseEntity<Dish> getDish(@PathVariable(required = true) Long id){
         return ResponseEntity.ok(dishService.getDish(id));
+    }
+
+    @GetMapping("/random")
+    public ResponseEntity<Long> getStringToMode(@RequestParam("type") DishCategoryEnum categoryEnum) {
+       return ResponseEntity.ok(dishService.getRandomDishIdByCategory(categoryEnum));
     }
 }
