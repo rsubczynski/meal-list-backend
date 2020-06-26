@@ -29,17 +29,14 @@ public class ApiError {
     }
 
     ApiError(HttpStatus status, Throwable ex) {
-        this();
-        this.status = status;
+        this(status);
         this.message = "Unexpected error";
         this.debugMessage = ex.getLocalizedMessage();
     }
 
     ApiError(HttpStatus status, String message, Throwable ex) {
-        this();
-        this.status = status;
+        this(status, ex);
         this.message = message;
-        this.debugMessage = ex.getLocalizedMessage();
     }
 }
 

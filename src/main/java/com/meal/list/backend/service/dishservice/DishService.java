@@ -1,16 +1,16 @@
 package com.meal.list.backend.service.dishservice;
 
 import com.meal.list.backend.entity.Dish;
+import com.meal.list.backend.entity.Ingredient;
+import com.meal.list.backend.entity.Weight;
 import com.meal.list.backend.error.exception.DishNotFoundException;
-import com.meal.list.backend.payload.DishSummary;
+import com.meal.list.backend.payload.DishResponse;
+import com.meal.list.backend.payload.DishSummaryResponse;
 import com.meal.list.backend.repository.DishRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,8 +19,36 @@ public class DishService {
     @Autowired
     private DishRepository dishRepository;
 
-    public List<Dish> getAllDishes() {
-        return Optional.ofNullable(dishRepository.findAll()).orElse(Collections.emptyList());
+    public List<DishResponse> getAllDishes() {
+        return Optional.ofNullable(dishRepository.findAll()).orElse(Collections.emptyList())
+                .stream().map(dish -> DishResponse.builder()
+                        .id(dish.getId())
+                        .name(dish.getName())
+                        .protein(calculateProtein(dish.getIngredients()))
+                        .carbohydrate(calculateCarbohydrate(dish.getIngredients()))
+                        .fat(calculateFat(dish.getIngredients()))
+                        .kcal(calculateKcal(dish.getIngredients()))
+                        .build()).collect(Collectors.toList());
+    }
+
+    private double calculateProtein(Map<Ingredient, Weight> ingredientsWeightMap) {
+        return ingredientsWeightMap.entrySet().stream().mapToDouble(map ->
+                (map.getValue().getGram() * map.getKey().getProtein()) / 100).sum();
+    }
+
+    private double calculateCarbohydrate(Map<Ingredient, Weight> ingredientsWeightMap) {
+        return ingredientsWeightMap.entrySet().stream().mapToDouble(map ->
+                (map.getValue().getGram() * map.getKey().getCarbohydrate()) / 100).sum();
+    }
+
+    private double calculateFat(Map<Ingredient, Weight> ingredientsWeightMap) {
+        return ingredientsWeightMap.entrySet().stream().mapToDouble(map ->
+                (map.getValue().getGram() * map.getKey().getFat() / 100)).sum();
+    }
+
+    private double calculateKcal(Map<Ingredient, Weight> ingredientsWeightMap) {
+        return ingredientsWeightMap.entrySet().stream().mapToDouble(map ->
+                (map.getValue().getGram() * map.getKey().getKcal() / 100)).sum();
     }
 
     public Dish getDish(Long id) {
@@ -28,12 +56,12 @@ public class DishService {
                 .orElseThrow(() -> new DishNotFoundException("Not found Dish on id = " + id));
     }
 
-    public List<DishSummary> getCategorySummaryCount() {
+    public List<DishSummaryResponse> getCategorySummaryCount() {
         return Optional.ofNullable(dishRepository.findAll()).orElse(Collections.emptyList())
                 .stream()
                 .collect(Collectors.groupingBy(Dish::getCategoryEnum))
                 .entrySet().stream()
-                .map((k) -> DishSummary.builder().categoryEnum(k.getKey()).count(k.getValue().size()).build())
+                .map((k) -> DishSummaryResponse.builder().categoryEnum(k.getKey()).count(k.getValue().size()).build())
                 .collect(Collectors.toList());
     }
 

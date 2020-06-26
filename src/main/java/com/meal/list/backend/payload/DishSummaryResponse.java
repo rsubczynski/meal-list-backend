@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class DishSummary {
+public class DishSummaryResponse {
 
     private DishCategoryEnum categoryEnum;
     private int count;

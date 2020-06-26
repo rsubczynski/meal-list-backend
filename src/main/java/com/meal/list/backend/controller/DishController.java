@@ -1,7 +1,8 @@
 package com.meal.list.backend.controller;
 
 import com.meal.list.backend.entity.Dish;
-import com.meal.list.backend.payload.DishSummary;
+import com.meal.list.backend.payload.DishResponse;
+import com.meal.list.backend.payload.DishSummaryResponse;
 import com.meal.list.backend.service.dishservice.DishCategoryEnum;
 import com.meal.list.backend.service.dishservice.DishService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +20,12 @@ public class DishController {
     private DishService dishService;
 
     @GetMapping(value = "/dishCategory",produces = MediaType.APPLICATION_JSON_VALUE)
-    private @ResponseBody ResponseEntity<List<DishSummary>> getCategoryDishesCount(){
+    private @ResponseBody ResponseEntity<List<DishSummaryResponse>> getCategoryDishesCount(){
         return ResponseEntity.ok(dishService.getCategorySummaryCount());
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    private @ResponseBody ResponseEntity<List<Dish>> getAllDishes(){
+    private @ResponseBody ResponseEntity<List<DishResponse>> getAllDishes(){
         return ResponseEntity.ok(dishService.getAllDishes());
     }
 
