@@ -1,10 +1,9 @@
 package com.meal.list.backend;
 
 import com.meal.list.backend.configuration.FileStorageProperties;
-import com.meal.list.backend.entity.Dish;
 import com.meal.list.backend.entity.Ingredient;
-import com.meal.list.backend.payload.DishSummary;
 import com.meal.list.backend.service.IngredientService;
+import com.meal.list.backend.service.dishservice.DishCategoryEnum;
 import com.meal.list.backend.service.dishservice.DishService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -75,8 +74,8 @@ public class BackendApplication implements CommandLineRunner {
 //        map.put(x.get(1), Weight.builder().gram(100).build());
 
 
-       List<Dish> a = dishService.getAllDishes();
-       List<DishSummary> weqwe = dishService.getCategorySummaryCount();
+//       List<Dish> a = dishService.getAllDishes();
+//       Long weqwe = dishService.getRandomDishIdByCategory(DishCategoryEnum.BREAKFAST);
 
     }
 }
