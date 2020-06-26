@@ -24,6 +24,7 @@ public class DishService {
                 .stream().map(dish -> DishResponse.builder()
                         .id(dish.getId())
                         .name(dish.getName())
+                        .type(dish.getCategoryEnum().toString())
                         .protein(calculateProtein(dish.getIngredients()))
                         .carbohydrate(calculateCarbohydrate(dish.getIngredients()))
                         .fat(calculateFat(dish.getIngredients()))

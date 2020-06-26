@@ -11,6 +11,7 @@ import lombok.Setter;
 public class DishResponse {
 
     private Long id;
+    private String type;
     private String name;
     private double protein;
     private double carbohydrate;
