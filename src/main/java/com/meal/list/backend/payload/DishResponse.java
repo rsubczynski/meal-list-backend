@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Map;
 
 @Builder
 @Setter
@@ -13,6 +12,6 @@ import java.util.Map;
 public class DishResponse {
 
     private MakroDishResponse makroDish;
-    private Map<String, Integer> ingredientsMap;
+    private List<IngredientsListResponse> ingredientsList;
     private List<String> descriptions;
 }

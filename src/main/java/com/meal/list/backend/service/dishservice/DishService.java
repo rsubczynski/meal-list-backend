@@ -5,6 +5,7 @@ import com.meal.list.backend.entity.Ingredient;
 import com.meal.list.backend.entity.Weight;
 import com.meal.list.backend.error.exception.DishNotFoundException;
 import com.meal.list.backend.payload.DishResponse;
+import com.meal.list.backend.payload.IngredientsListResponse;
 import com.meal.list.backend.payload.MakroDishResponse;
 import com.meal.list.backend.payload.DishSummaryResponse;
 import com.meal.list.backend.repository.DishRepository;
@@ -66,16 +67,19 @@ public class DishService {
                 .builder()
                 .makroDish(buildMakroDish(dish))
                 .descriptions(dish.getDescriptions())
-                .ingredientsMap(adaptIngredientsToDisplay(dish.getIngredients()))
+                .ingredientsList(convertIngredientsToDisplay(dish.getIngredients()))
                 .build();
     }
 
-    private Map<String, Integer> adaptIngredientsToDisplay(Map<Ingredient, Weight> ingredientWeightMap) {
+    private List<IngredientsListResponse> convertIngredientsToDisplay(Map<Ingredient, Weight> ingredientWeightMap) {
         return ingredientWeightMap.entrySet()
                 .stream()
-                .collect(Collectors.toMap(
-                        ingredient -> ingredient.getKey().getName(),
-                        weight -> weight.getValue().getGram()));
+                .map(entry -> IngredientsListResponse
+                        .builder()
+                        .name(entry.getKey().getName())
+                        .gram(entry.getValue().getGram())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     public List<DishSummaryResponse> getCategorySummaryCount() {
