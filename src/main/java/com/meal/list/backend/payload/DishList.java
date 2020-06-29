@@ -8,7 +8,7 @@ import lombok.Setter;
 @Builder
 @Setter
 @Getter
-public class DishResponse {
+public class DishList {
 
     private Long id;
     private String type;
