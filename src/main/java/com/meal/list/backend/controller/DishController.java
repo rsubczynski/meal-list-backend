@@ -1,7 +1,7 @@
 package com.meal.list.backend.controller;
 
-import com.meal.list.backend.entity.Dish;
-import com.meal.list.backend.payload.DishList;
+import com.meal.list.backend.payload.DishResponse;
+import com.meal.list.backend.payload.MakroDishResponse;
 import com.meal.list.backend.payload.DishSummaryResponse;
 import com.meal.list.backend.service.dishservice.DishCategoryEnum;
 import com.meal.list.backend.service.dishservice.DishService;
@@ -25,12 +25,13 @@ public class DishController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    private @ResponseBody ResponseEntity<List<DishList>> getAllDishes(){
+    private @ResponseBody ResponseEntity<List<MakroDishResponse>> getAllDishes(){
         return ResponseEntity.ok(dishService.getAllDishes());
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody ResponseEntity<Dish> getDish(@PathVariable(required = true) Long id){
+    public @ResponseBody
+    ResponseEntity<DishResponse> getDish(@PathVariable(required = true) Long id){
         return ResponseEntity.ok(dishService.getDish(id));
     }
 

@@ -4,7 +4,8 @@ import com.meal.list.backend.entity.Dish;
 import com.meal.list.backend.entity.Ingredient;
 import com.meal.list.backend.entity.Weight;
 import com.meal.list.backend.error.exception.DishNotFoundException;
-import com.meal.list.backend.payload.DishList;
+import com.meal.list.backend.payload.DishResponse;
+import com.meal.list.backend.payload.MakroDishResponse;
 import com.meal.list.backend.payload.DishSummaryResponse;
 import com.meal.list.backend.repository.DishRepository;
 import com.meal.list.backend.service.dishservice.dishcalcstrategy.*;
@@ -20,17 +21,21 @@ public class DishService {
     @Autowired
     private DishRepository dishRepository;
 
-    public List<DishList> getAllDishes() {
+    public List<MakroDishResponse> getAllDishes() {
         return Optional.ofNullable(dishRepository.findAll()).orElse(Collections.emptyList())
-                .stream().map(dish -> DishList.builder()
-                        .id(dish.getId())
-                        .name(dish.getName())
-                        .type(dish.getCategoryEnum().toString())
-                        .protein(calculate(DishCalculateEnum.PROTEIN, dish.getIngredients()))
-                        .carbohydrate(calculate(DishCalculateEnum.CARBOHYDRATE, dish.getIngredients()))
-                        .fat(calculate(DishCalculateEnum.FAT, dish.getIngredients()))
-                        .kcal(calculate(DishCalculateEnum.KCAL, dish.getIngredients()))
-                        .build()).collect(Collectors.toList());
+                .stream().map(this::buildMakroDish).collect(Collectors.toList());
+    }
+
+    private MakroDishResponse buildMakroDish(Dish dish) {
+        return MakroDishResponse.builder()
+                .id(dish.getId())
+                .name(dish.getName())
+                .type(dish.getCategoryEnum().toString())
+                .protein(calculate(DishCalculateEnum.PROTEIN, dish.getIngredients()))
+                .carbohydrate(calculate(DishCalculateEnum.CARBOHYDRATE, dish.getIngredients()))
+                .fat(calculate(DishCalculateEnum.FAT, dish.getIngredients()))
+                .kcal(calculate(DishCalculateEnum.KCAL, dish.getIngredients()))
+                .build();
     }
 
     public double calculate(DishCalculateEnum calculateEnum, Map<Ingredient, Weight> weightMap) {
@@ -54,9 +59,23 @@ public class DishService {
         return calc.calculateSum(weightMap);
     }
 
-    public Dish getDish(Long id) {
-        return dishRepository.findById(id)
+    public DishResponse getDish(Long id) {
+        Dish dish = dishRepository.findById(id)
                 .orElseThrow(() -> new DishNotFoundException("Not found Dish on id = " + id));
+        return DishResponse
+                .builder()
+                .makroDish(buildMakroDish(dish))
+                .descriptions(dish.getDescriptions())
+                .ingredientsMap(adaptIngredientsToDisplay(dish.getIngredients()))
+                .build();
+    }
+
+    private Map<String, Integer> adaptIngredientsToDisplay(Map<Ingredient, Weight> ingredientWeightMap) {
+        return ingredientWeightMap.entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        ingredient -> ingredient.getKey().getName(),
+                        weight -> weight.getValue().getGram()));
     }
 
     public List<DishSummaryResponse> getCategorySummaryCount() {

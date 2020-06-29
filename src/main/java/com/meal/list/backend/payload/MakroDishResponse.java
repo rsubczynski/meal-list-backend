@@ -8,7 +8,7 @@ import lombok.Setter;
 @Builder
 @Setter
 @Getter
-public class DishList {
+public class MakroDishResponse {
 
     private Long id;
     private String type;
