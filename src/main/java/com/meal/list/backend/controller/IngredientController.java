@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 @RestController()
-@RequestMapping("apiV1/ingredient")
+@RequestMapping("apiV1/")
 public class IngredientController {
 
     @Autowired
@@ -27,20 +27,25 @@ public class IngredientController {
     @Autowired
     private ExcelParserService excelParserService;
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "ingredient", produces = MediaType.APPLICATION_JSON_VALUE)
     private @ResponseBody ResponseEntity<List<Ingredient>> getAllIngredients(){
         return ResponseEntity.ok(ingredientService.getAllIngredient());
     }
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "ingredient/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody ResponseEntity<Ingredient> getIngredient(@PathVariable(required = true) Long id){
         return ResponseEntity.ok(ingredientService.findById(id));
     }
 
-    @PostMapping()
+    @PostMapping(value = "ingredients")
     public ResponseEntity<Set<Ingredient>> ingredient(@RequestParam("file") MultipartFile file) throws IOException {
         Set<Ingredient> ingredientSet = excelParserService.parseIngredient(fileService.getInputStream(file));
         ingredientService.saveAllIngredient(ingredientSet);
         return ResponseEntity.ok(ingredientSet);
+    }
+
+    @PostMapping(value = "ingredient")
+    public ResponseEntity<Ingredient> addIngredient(@RequestBody Ingredient ingredient){
+        return ResponseEntity.ok(ingredientService.saveIngredient(ingredient));
     }
 }

@@ -9,7 +9,8 @@ import com.meal.list.backend.payload.IngredientsListResponse;
 import com.meal.list.backend.payload.MakroDishResponse;
 import com.meal.list.backend.payload.DishSummaryResponse;
 import com.meal.list.backend.repository.DishRepository;
-import com.meal.list.backend.service.dishservice.dishcalcstrategy.*;
+import com.meal.list.backend.service.dishcalculateservice.DishCalculateService;
+import com.meal.list.backend.service.dishcalculateservice.dishcalcstrategy.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,9 @@ public class DishService {
     @Autowired
     private DishRepository dishRepository;
 
+    @Autowired
+    private DishCalculateService calculateService;
+
     public List<MakroDishResponse> getAllDishes() {
         return Optional.ofNullable(dishRepository.findAll()).orElse(Collections.emptyList())
                 .stream().map(this::buildMakroDish).collect(Collectors.toList());
@@ -32,32 +36,11 @@ public class DishService {
                 .id(dish.getId())
                 .name(dish.getName())
                 .type(dish.getCategoryEnum().toString())
-                .protein(calculate(DishCalculateEnum.PROTEIN, dish.getIngredients()))
-                .carbohydrate(calculate(DishCalculateEnum.CARBOHYDRATE, dish.getIngredients()))
-                .fat(calculate(DishCalculateEnum.FAT, dish.getIngredients()))
-                .kcal(calculate(DishCalculateEnum.KCAL, dish.getIngredients()))
+                .protein(calculateService.calculate(DishCalculateEnum.PROTEIN, dish.getIngredients()))
+                .carbohydrate(calculateService.calculate(DishCalculateEnum.CARBOHYDRATE, dish.getIngredients()))
+                .fat(calculateService.calculate(DishCalculateEnum.FAT, dish.getIngredients()))
+                .kcal(calculateService.calculate(DishCalculateEnum.KCAL, dish.getIngredients()))
                 .build();
-    }
-
-    public double calculate(DishCalculateEnum calculateEnum, Map<Ingredient, Weight> weightMap) {
-        DishCalculate calc;
-        switch (calculateEnum) {
-            case PROTEIN:
-                calc = new DishProteinCalculate();
-                break;
-            case CARBOHYDRATE:
-                calc = new DishCarboCalculate();
-                break;
-            case FAT:
-                calc = new DishFatCalculate();
-                break;
-            case KCAL:
-                calc = new DishKcalCalculate();
-                break;
-            default:
-                throw new IllegalArgumentException("Unsupported enum " + calculateEnum);
-        }
-        return calc.calculateSum(weightMap);
     }
 
     public DishResponse getDish(Long id) {
@@ -74,12 +57,16 @@ public class DishService {
     private List<IngredientsListResponse> convertIngredientsToDisplay(Map<Ingredient, Weight> ingredientWeightMap) {
         return ingredientWeightMap.entrySet()
                 .stream()
-                .map(entry -> IngredientsListResponse
-                        .builder()
-                        .name(entry.getKey().getName())
-                        .gram(entry.getValue().getGram())
-                        .build())
+                .map(this::buildIngredientsListResponse)
                 .collect(Collectors.toList());
+    }
+
+    private IngredientsListResponse buildIngredientsListResponse(Map.Entry<Ingredient, Weight> entry) {
+        return IngredientsListResponse
+                .builder()
+                .name(entry.getKey().getName())
+                .gram(entry.getValue().getGram())
+                .build();
     }
 
     public List<DishSummaryResponse> getCategorySummaryCount() {

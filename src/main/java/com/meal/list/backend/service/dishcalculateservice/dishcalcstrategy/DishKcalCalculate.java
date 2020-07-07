@@ -1,4 +1,4 @@
-package com.meal.list.backend.service.dishservice.dishcalcstrategy;
+package com.meal.list.backend.service.dishcalculateservice.dishcalcstrategy;
 
 import com.meal.list.backend.entity.Ingredient;
 import com.meal.list.backend.entity.Weight;

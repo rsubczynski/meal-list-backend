@@ -1,4 +1,4 @@
-package com.meal.list.backend.service.dishservice.dishcalcstrategy;
+package com.meal.list.backend.service.dishcalculateservice.dishcalcstrategy;
 
 public enum DishCalculateEnum {
     PROTEIN,
