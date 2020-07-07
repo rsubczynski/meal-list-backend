@@ -36,7 +36,7 @@ public class DishController {
     }
 
     @GetMapping("/random")
-    public ResponseEntity<Long> getStringToMode(@RequestParam("type") DishCategoryEnum categoryEnum) {
+    public ResponseEntity<Long> getRandomDishId(@RequestParam("type") DishCategoryEnum categoryEnum) {
        return ResponseEntity.ok(dishService.getRandomDishIdByCategory(categoryEnum));
     }
 }

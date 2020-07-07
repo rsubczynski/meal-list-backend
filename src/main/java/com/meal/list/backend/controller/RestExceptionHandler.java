@@ -3,6 +3,7 @@ package com.meal.list.backend.controller;
 import com.meal.list.backend.error.ApiError;
 import com.meal.list.backend.error.exception.DishNotFoundException;
 import com.meal.list.backend.error.exception.FileStorageException;
+import com.meal.list.backend.error.exception.IngredientExistException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.persistence.EntityNotFoundException;
 
+import static org.springframework.http.HttpStatus.NOT_ACCEPTABLE;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -35,6 +37,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleDishNotFoundException(
             DishNotFoundException ex) {
         return buildResponseEntity(buildAppError(NOT_FOUND, ex));
+    }
+
+    @ExceptionHandler(IngredientExistException.class)
+    protected ResponseEntity<Object> handleIngredientExistException(
+            IngredientExistException ex) {
+        return buildResponseEntity(buildAppError(NOT_ACCEPTABLE, ex));
     }
 
     private ApiError buildAppError(HttpStatus httpStatus, Exception ex){
