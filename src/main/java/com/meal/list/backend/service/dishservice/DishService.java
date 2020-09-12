@@ -3,6 +3,7 @@ package com.meal.list.backend.service.dishservice;
 import com.meal.list.backend.entity.Dish;
 import com.meal.list.backend.entity.Ingredient;
 import com.meal.list.backend.entity.Weight;
+import com.meal.list.backend.error.exception.DishListIsEmptyExeption;
 import com.meal.list.backend.error.exception.DishNotFoundException;
 import com.meal.list.backend.payload.DishResponse;
 import com.meal.list.backend.payload.IngredientsListResponse;
@@ -45,7 +46,7 @@ public class DishService {
 
     public DishResponse getDish(Long id) {
         Dish dish = dishRepository.findById(id)
-                .orElseThrow(() -> new DishNotFoundException("Not found Dish on id = " + id));
+                .orElseThrow(() -> new DishNotFoundException(id));
         return DishResponse
                 .builder()
                 .makroDish(buildMakroDish(dish))
@@ -80,13 +81,12 @@ public class DishService {
 
     public Long getRandomDishIdByCategory(DishCategoryEnum dishCategoryEnum) {
         List<Long> ids = Optional.ofNullable(dishRepository.findAllByCategoryEnum(dishCategoryEnum))
-                .orElseThrow(() -> new DishNotFoundException("The category has no dishes"))
+                .orElseThrow(() -> new DishListIsEmptyExeption(dishCategoryEnum.toString()))
                 .stream()
                 .map(Dish::getId)
                 .collect(Collectors.toList());
         return ids.get(new Random().nextInt(ids.size()));
     }
-
 
     public void addDish(Dish dish) {
         dishRepository.save(dish);

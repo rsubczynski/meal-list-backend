@@ -2,15 +2,15 @@ package com.meal.list.backend.service;
 
 import com.meal.list.backend.entity.Ingredient;
 import com.meal.list.backend.error.exception.IngredientExistException;
+import com.meal.list.backend.error.exception.IngredientNotFoundException;
 import com.meal.list.backend.repository.IngredientRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class IngredientService {
@@ -18,15 +18,10 @@ public class IngredientService {
     @Autowired
     private IngredientRepository ingredientRepository;
 
-    public void saveAllIngredient(Set<Ingredient> ingredientSet) {
-        ingredientSet.forEach(this::saveIngredient);
-    }
-
     public Ingredient saveIngredient(Ingredient ingredient) {
         if (ingredientRepository.existByName(ingredient.getName())) {
-            throw new IngredientExistException("Ingredient by name " + ingredient.getName() + " is exist");
+            throw new IngredientExistException(ingredient.getName());
         }
-
         return ingredientRepository.save(ingredient);
     }
 
@@ -36,6 +31,20 @@ public class IngredientService {
 
     public Ingredient findById(Long id) {
         return ingredientRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Cannot find Ingredient with id " + id));
+                .orElseThrow(() -> new IngredientNotFoundException(id));
+    }
+
+    public Ingredient updateIngredient(Long id, Ingredient ingredient) {
+        Ingredient foundedItem = ingredientRepository.findById(id)
+                .orElseThrow(() -> new IngredientNotFoundException(id));
+        ingredient.setId(id);
+        BeanUtils.copyProperties(ingredient, foundedItem);
+        return ingredientRepository.save(foundedItem);
+    }
+
+    public Long deleteById(Long id) {
+        ingredientRepository.findById(id).orElseThrow(() -> new IngredientNotFoundException(id));
+        ingredientRepository.deleteById(id);
+        return id;
     }
 }

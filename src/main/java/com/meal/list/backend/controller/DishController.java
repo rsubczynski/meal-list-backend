@@ -19,24 +19,26 @@ public class DishController {
     @Autowired
     private DishService dishService;
 
-    @GetMapping(value = "/dishCategory",produces = MediaType.APPLICATION_JSON_VALUE)
-    private @ResponseBody ResponseEntity<List<DishSummaryResponse>> getCategoryDishesCount(){
+    @GetMapping(value = "/dishCategory", produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    ResponseEntity<List<DishSummaryResponse>> getCategoryDishesCount() {
         return ResponseEntity.ok(dishService.getCategorySummaryCount());
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    private @ResponseBody ResponseEntity<List<MakroDishResponse>> getAllDishes(){
+    public @ResponseBody
+    ResponseEntity<List<MakroDishResponse>> getAllDishes() {
         return ResponseEntity.ok(dishService.getAllDishes());
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    ResponseEntity<DishResponse> getDish(@PathVariable(required = true) Long id){
+    ResponseEntity<DishResponse> getDish(@PathVariable Long id) {
         return ResponseEntity.ok(dishService.getDish(id));
     }
 
     @GetMapping("/random")
     public ResponseEntity<Long> getRandomDishId(@RequestParam("type") DishCategoryEnum categoryEnum) {
-       return ResponseEntity.ok(dishService.getRandomDishIdByCategory(categoryEnum));
+        return ResponseEntity.ok(dishService.getRandomDishIdByCategory(categoryEnum));
     }
 }

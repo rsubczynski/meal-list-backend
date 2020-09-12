@@ -3,6 +3,8 @@ package com.meal.list.backend.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+
 
 @Builder
 @Getter
@@ -17,6 +19,7 @@ public class Ingredient {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Please provide a name")
     @Column( unique = true)
     private String name;
     private double protein;

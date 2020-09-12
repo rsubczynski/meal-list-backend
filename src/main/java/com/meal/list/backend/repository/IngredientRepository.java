@@ -11,5 +11,4 @@ public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
 
     @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END FROM Ingredient c WHERE c.name = :name")
     boolean existByName(String name);
-
 }
