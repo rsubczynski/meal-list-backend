@@ -3,7 +3,7 @@ package com.meal.list.backend.service.dishservice;
 import com.meal.list.backend.entity.Dish;
 import com.meal.list.backend.entity.Ingredient;
 import com.meal.list.backend.entity.Weight;
-import com.meal.list.backend.error.exception.DishListIsEmptyExeption;
+import com.meal.list.backend.error.exception.DishListIsEmptyException;
 import com.meal.list.backend.error.exception.DishNotFoundException;
 import com.meal.list.backend.payload.DishResponse;
 import com.meal.list.backend.payload.IngredientsListResponse;
@@ -12,6 +12,7 @@ import com.meal.list.backend.payload.DishSummaryResponse;
 import com.meal.list.backend.repository.DishRepository;
 import com.meal.list.backend.service.dishcalculateservice.DishCalculateService;
 import com.meal.list.backend.service.dishcalculateservice.dishcalcstrategy.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -81,14 +82,28 @@ public class DishService {
 
     public Long getRandomDishIdByCategory(DishCategoryEnum dishCategoryEnum) {
         List<Long> ids = Optional.ofNullable(dishRepository.findAllByCategoryEnum(dishCategoryEnum))
-                .orElseThrow(() -> new DishListIsEmptyExeption(dishCategoryEnum.toString()))
+                .orElseThrow(() -> new DishListIsEmptyException(dishCategoryEnum.toString()))
                 .stream()
                 .map(Dish::getId)
                 .collect(Collectors.toList());
         return ids.get(new Random().nextInt(ids.size()));
     }
 
-    public void addDish(Dish dish) {
-        dishRepository.save(dish);
+    public Dish addDish(Dish dish) {
+        return dishRepository.save(dish);
+    }
+
+    public Dish updateDish(Long id, Dish dish) {
+        Dish foundedDish = dishRepository.findById(id)
+                .orElseThrow(() -> new DishNotFoundException(id));
+        dish.setId(id);
+        BeanUtils.copyProperties(dish, foundedDish);
+        return dishRepository.save(foundedDish);
+    }
+
+    public Long deleteById(Long id) {
+        Dish dish = dishRepository.findById(id).orElseThrow(() -> new DishNotFoundException(id));
+        dishRepository.delete(dish);
+        return id;
     }
 }

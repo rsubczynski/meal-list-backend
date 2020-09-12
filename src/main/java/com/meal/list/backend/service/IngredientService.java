@@ -1,7 +1,6 @@
 package com.meal.list.backend.service;
 
 import com.meal.list.backend.entity.Ingredient;
-import com.meal.list.backend.error.exception.IngredientExistException;
 import com.meal.list.backend.error.exception.IngredientNotFoundException;
 import com.meal.list.backend.repository.IngredientRepository;
 import org.springframework.beans.BeanUtils;
@@ -19,9 +18,6 @@ public class IngredientService {
     private IngredientRepository ingredientRepository;
 
     public Ingredient saveIngredient(Ingredient ingredient) {
-        if (ingredientRepository.existByName(ingredient.getName())) {
-            throw new IngredientExistException(ingredient.getName());
-        }
         return ingredientRepository.save(ingredient);
     }
 
