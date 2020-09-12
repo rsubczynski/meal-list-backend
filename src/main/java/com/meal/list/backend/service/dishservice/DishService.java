@@ -82,10 +82,15 @@ public class DishService {
 
     public Long getRandomDishIdByCategory(DishCategoryEnum dishCategoryEnum) {
         List<Long> ids = Optional.ofNullable(dishRepository.findAllByCategoryEnum(dishCategoryEnum))
-                .orElseThrow(() -> new DishListIsEmptyException(dishCategoryEnum.toString()))
+                .orElse(Collections.emptyList())
                 .stream()
                 .map(Dish::getId)
                 .collect(Collectors.toList());
+
+        if (ids.isEmpty()) {
+            throw new DishListIsEmptyException(dishCategoryEnum.toString());
+        }
+
         return ids.get(new Random().nextInt(ids.size()));
     }
 

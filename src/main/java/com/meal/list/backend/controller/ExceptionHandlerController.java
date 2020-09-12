@@ -1,6 +1,7 @@
 package com.meal.list.backend.controller;
 
 import com.meal.list.backend.error.ApiError;
+import com.meal.list.backend.error.exception.DishListIsEmptyException;
 import com.meal.list.backend.error.exception.DishNotFoundException;
 import com.meal.list.backend.error.exception.IngredientNotFoundException;
 import org.springframework.core.Ordered;
@@ -32,6 +33,12 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
         return buildResponseEntity(buildAppError(NOT_FOUND, ex));
     }
 
+    @ExceptionHandler(DishListIsEmptyException.class)
+    protected ResponseEntity<ApiError> handleDishListIsEmptyException(
+            DishListIsEmptyException ex) {
+        return buildResponseEntity(buildAppError(NOT_FOUND, ex));
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     protected ResponseEntity<ApiError> handleDataIntegrityViolationException(
             DataIntegrityViolationException ex) {
@@ -39,7 +46,7 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
     }
 
     private ApiError buildAppError(HttpStatus httpStatus, Exception ex){
-        return new ApiError(httpStatus, ex.getMessage(), ex);
+        return new ApiError(httpStatus, ex);
     }
 
     private ResponseEntity<ApiError> buildResponseEntity(ApiError apiError) {

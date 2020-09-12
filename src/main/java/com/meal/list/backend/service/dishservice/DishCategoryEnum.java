@@ -1,10 +1,10 @@
 package com.meal.list.backend.service.dishservice;
 
 public enum DishCategoryEnum {
-    BREAKFAST("Śniadanie"),
-    LUNCH("Drugie śniadanie"),
-    DINNER("Odiad"),
-    SUPPER("Kolacja");
+    BREAKFAST("BREAKFAST"),
+    LUNCH("LUNCH"),
+    DINNER("DINNER"),
+    SUPPER("SUPPER");
 
     private final String name;
 

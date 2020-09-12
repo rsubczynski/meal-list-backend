@@ -4,6 +4,7 @@ import com.meal.list.backend.service.dishservice.DishCategoryEnum;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +27,7 @@ public class Dish {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Please provide a name")
     @Column( unique = true)
     private String name;
 
@@ -38,6 +40,7 @@ public class Dish {
             joinColumns = @JoinColumn(name = "dish_id"),
             inverseJoinColumns = @JoinColumn(name = "ingredient_id"))
     private Map<Ingredient, Weight> ingredients;
+
 
     @ElementCollection(targetClass = String.class)
     private List<String> descriptions;
